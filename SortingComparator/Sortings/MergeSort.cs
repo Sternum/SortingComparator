@@ -77,6 +77,13 @@ namespace SortingComparator.Sortings
                 mergeIndex++;
             }
 
+            while(leftIndex < leftSize)
+            {
+                array[mergeIndex] = leftArray[leftIndex];
+                leftIndex++;
+                mergeIndex++;
+            }
+
             while(rightIndex < rightSize)
             {
                 array[mergeIndex] = rigthArray[rightIndex];
