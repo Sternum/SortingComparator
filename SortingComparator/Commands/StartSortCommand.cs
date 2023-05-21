@@ -10,17 +10,19 @@ namespace SortingComparator.Commands
     public class StartSortCommand : ICommand
     {
         private Action action;
+        private Func<object, bool> canExecute;
 
         public event EventHandler? CanExecuteChanged;
 
-        public StartSortCommand(Action action)
+        public StartSortCommand(Action action, Func<object, bool> canExecute)
         {
             this.action = action;
+            this.canExecute = canExecute;
         }
 
         public bool CanExecute(object? parameter)
         {
-            return true;
+            return canExecute?.Invoke(parameter) ?? true;
         }
 
         public void Execute(object? parameter)
