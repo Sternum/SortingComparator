@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,8 @@ namespace SortingComparator.ViewModel
         public ICommand StartSortCommand { get; set; }
 
         private SortingService _sortingService;
+
+        private bool TaskInProgres = false;
 
         private string maxLengthInput;
 
@@ -64,13 +67,14 @@ namespace SortingComparator.ViewModel
 
         public SortingViewModel() { 
             _sortingService = new SortingService();
-            StartSortCommand = new StartSortCommand(Sort);
+            StartSortCommand = new StartSortCommand(Sort, CanExecute);
             PlotModel = new PlotModel() { Title = "Wynik Sortowań" };
             SortingsRes = new ObservableCollection<SortingsResults>();
         }
 
-        public void Sort()
+        public async void Sort()
         {
+            TaskInProgres = true;
             PlotModel.Series.Clear();
             SortingsRes.Clear();
             PlotModel.Legends.Clear();
@@ -79,7 +83,7 @@ namespace SortingComparator.ViewModel
                 LegendTitle = "Legenda",
                 LegendPosition = LegendPosition.TopLeft,
             });
-            List<SortingsResults> results = _sortingService.RunTest(Int32.Parse(maxLengthInput));
+            List<SortingsResults> results = await _sortingService.RunTest(Int32.Parse(maxLengthInput));
             foreach(SortingsResults result in results) {
                SortingsRes.Add(result);
                 LineSeries line = new LineSeries();
@@ -93,6 +97,12 @@ namespace SortingComparator.ViewModel
             PlotModel.InvalidatePlot(true);
 
             OnPropertyChanged(nameof(SortingsRes));
+            TaskInProgres = false;
+        }
+
+        private bool CanExecute(object parameter)
+        {
+            return !TaskInProgres;
         }
 
         protected virtual void OnPropertyChanged(string propertyName)
