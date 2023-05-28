@@ -13,12 +13,12 @@ namespace SortingComparator.Services
     public class SortingService
     {
         private ArrayPreparationService preparationService;
-        private List<ISortingStrategy> sortingStrategies;
+        private List<SortingStrategy> sortingStrategies;
 
         public SortingService()
         {
             preparationService = new ArrayPreparationService();
-            sortingStrategies = new List<ISortingStrategy>();
+            sortingStrategies = new List<SortingStrategy>();
             sortingStrategies.Add(new SelectionSort());
             sortingStrategies.Add(new MergeSort());
             
@@ -32,7 +32,7 @@ namespace SortingComparator.Services
 
             List<Task<SortingsResults>> tasks = new List<Task<SortingsResults>>();
 
-            foreach(ISortingStrategy strategy in sortingStrategies)
+            foreach(SortingStrategy strategy in sortingStrategies)
             {
                 tasks.Add(Task.Run(() => SortTask(arraysToTest, strategy)));
             }
@@ -42,18 +42,18 @@ namespace SortingComparator.Services
             return results.ToList<SortingsResults>();
         }
 
-        private SortingsResults SortTask(int[][] arraysToTest, ISortingStrategy strategy)
+        private SortingsResults SortTask(int[][] arraysToTest, SortingStrategy strategy)
         {
             SortingsResults sortResult = new SortingsResults();
-            sortResult.Name = strategy.getName();
-            sortResult.Tag = strategy.getTag();
+            sortResult.Name = strategy.GetName();
+            sortResult.Tag = strategy.GetTag();
             foreach (int[] value in arraysToTest)
             {
                 
                 int[] clonedArray = new int[value.Length];
                 Array.Copy(value, clonedArray, value.Length);
                 SortData data = strategy.Sort(clonedArray);
-                sortResult.DataPoints.Add(new DataPoint(data.Size, data.Time));
+                sortResult.DataPoints.Add(new DataPoint(data.Size, data.Steps));
             }
             Trace.WriteLine(sortResult.Tag);
             return sortResult;

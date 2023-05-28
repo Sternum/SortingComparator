@@ -7,31 +7,30 @@ using System.Threading.Tasks;
 
 namespace SortingComparator.Sortings
 {
-    public class MergeSort : ISortingStrategy
+    public class MergeSort : SortingStrategy
     {
-        public string getName()
+
+        public override string GetName()
         {
             return "Sortowanie przez scalanie";
         }
 
-        public string getTag()
+        public override string GetTag()
         {
             return "MERGE_SORT";
         }
 
-        public SortData Sort(int[] arrayToSort)
+        public override SortData Sort(int[] arrayToSort)
         {
-            var watch = new System.Diagnostics.Stopwatch();
-            watch.Start();
+            base.Sort(arrayToSort);
             Split(arrayToSort, 0, arrayToSort.Length - 1);
-            watch.Stop();
-
-            return new SortData { Size = arrayToSort.Length, Time = watch.Elapsed.TotalSeconds };
+            return new SortData { Size = arrayToSort.Length, Steps = this.counter };
         }
 
         private void Split(int[] array, int left, int right)
         {
             if(left < right) { 
+                this.counter++;
                 int mid = (left + right) / 2;
                 Split(array, left, mid);
                 Split(array, mid + 1, right);
@@ -50,11 +49,13 @@ namespace SortingComparator.Sortings
 
             for(leftIndex = 0; leftIndex < leftSize; leftIndex++)
             {
+                this.counter++;
                 leftArray[leftIndex] = array[left + leftIndex];
             }
 
             for(rightIndex = 0; rightIndex < rightSize; rightIndex++)
             {
+                this.counter++;
                 rigthArray[rightIndex] = array[mid + 1 + rightIndex];
             }
 
@@ -64,6 +65,7 @@ namespace SortingComparator.Sortings
 
             while (leftIndex < leftSize && rightIndex < rightSize)
             {
+                this.counter++;
                 if (leftArray[leftIndex] <= rigthArray[rightIndex])
                 {
                     array[mergeIndex] = leftArray[leftIndex];
@@ -79,6 +81,7 @@ namespace SortingComparator.Sortings
 
             while(leftIndex < leftSize)
             {
+                this.counter++;
                 array[mergeIndex] = leftArray[leftIndex];
                 leftIndex++;
                 mergeIndex++;
@@ -86,10 +89,12 @@ namespace SortingComparator.Sortings
 
             while(rightIndex < rightSize)
             {
+                this.counter++;
                 array[mergeIndex] = rigthArray[rightIndex];
                 rightIndex++;
                 mergeIndex++;
             }
+            
         }
     }
 }

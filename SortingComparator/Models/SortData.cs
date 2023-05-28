@@ -9,6 +9,6 @@ namespace SortingComparator.Models
     public class SortData
     {
         public int Size { get; set; }
-        public double Time { get; set; }
+        public ulong Steps { get; set; }
     }
 }

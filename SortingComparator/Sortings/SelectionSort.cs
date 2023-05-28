@@ -7,29 +7,29 @@ using System.Threading.Tasks;
 
 namespace SortingComparator.Sortings
 {
-    public class SelectionSort : ISortingStrategy
+    public class SelectionSort : SortingStrategy
     {
-        public string getName()
+
+        public override string GetName()
         {
             return "Sortowanie przez wybieranie";
         }
 
-        public string getTag()
+        public override string GetTag()
         {
             return "SELECTION_SORT";
         }
 
-        public SortData Sort(int[] arrayToSort)
+        public override SortData Sort(int[] arrayToSort)
         {
-            var watch = new System.Diagnostics.Stopwatch();
-
-            watch.Start();
+            base.Sort(arrayToSort);
             int length = arrayToSort.Length;
             for(int i = 0; i < length; i++)
             {
                 int min = i;
                 for( int j = i + 1; j < length; j++)
                 {
+                    this.counter++;
                     if (arrayToSort[j] < arrayToSort[min])
                     {
                         min = j;
@@ -41,11 +41,11 @@ namespace SortingComparator.Sortings
                     int tmp = arrayToSort[i];
                     arrayToSort[i] = arrayToSort[min];
                     arrayToSort[min] = tmp;
+                    this.counter++;
                 }
             }
-            watch.Stop();
             
-            return new SortData { Size = arrayToSort.Length, Time = watch.Elapsed.TotalSeconds };
+            return new SortData { Size = arrayToSort.Length, Steps = this.counter };
         }
     }
 }
