@@ -21,8 +21,9 @@ namespace SortingComparator.Services
             sortingStrategies = new List<SortingStrategy>();
             sortingStrategies.Add(new SelectionSort());
             sortingStrategies.Add(new MergeSort());
-            
-            
+            sortingStrategies.Add(new BubbleSort());
+            sortingStrategies.Add(new QuickSort());
+            sortingStrategies.Add(new BucketSort());    
         }
 
         public async Task<List<SortingsResults>> RunTest(int maxArrayLength)
