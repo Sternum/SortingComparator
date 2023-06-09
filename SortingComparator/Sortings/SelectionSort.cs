@@ -26,6 +26,7 @@ namespace SortingComparator.Sortings
             int length = arrayToSort.Length;
             for(int i = 0; i < length; i++)
             {
+                this.counter++;
                 int min = i;
                 for( int j = i + 1; j < length; j++)
                 {
@@ -41,7 +42,6 @@ namespace SortingComparator.Sortings
                     int tmp = arrayToSort[i];
                     arrayToSort[i] = arrayToSort[min];
                     arrayToSort[min] = tmp;
-                    this.counter++;
                 }
             }
             
