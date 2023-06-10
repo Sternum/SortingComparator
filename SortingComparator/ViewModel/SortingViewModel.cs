@@ -28,6 +28,17 @@ namespace SortingComparator.ViewModel
 
         private string maxLengthInput;
 
+        private int _progress = 0;
+
+        public int Progress
+        {
+            get { return _progress; }
+            set { 
+                _progress = value;
+                OnPropertyChanged(nameof(Progress));
+            }
+        }
+
         public string MaxLengthInput
         {
             get => maxLengthInput;
@@ -74,6 +85,7 @@ namespace SortingComparator.ViewModel
 
         public async void Sort()
         {
+            Progress = 0;
             TaskInProgres = true;
             PlotModel.Series.Clear();
             SortingsRes.Clear();
@@ -83,6 +95,7 @@ namespace SortingComparator.ViewModel
                 LegendTitle = "Legenda",
                 LegendPosition = LegendPosition.TopLeft,
             });
+            _sortingService.OnSortEnd += HandleProgress;
             List<SortingsResults> results = await _sortingService.RunTest(Int32.Parse(maxLengthInput));
             foreach(SortingsResults result in results) {
                SortingsRes.Add(result);
@@ -95,9 +108,14 @@ namespace SortingComparator.ViewModel
                 PlotModel.Series.Add(line);
             }
             PlotModel.InvalidatePlot(true);
-
+            _sortingService.OnSortEnd -= HandleProgress;
             OnPropertyChanged(nameof(SortingsRes));
             TaskInProgres = false;
+        }
+
+        private void HandleProgress(int progress)
+        {
+            Progress = progress;
         }
 
         private bool CanExecute(object parameter)

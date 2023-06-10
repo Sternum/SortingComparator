@@ -12,8 +12,13 @@ namespace SortingComparator.Services
 {
     public class SortingService
     {
+
+        public event Action<int> OnSortEnd;
+
         private ArrayPreparationService preparationService;
         private List<SortingStrategy> sortingStrategies;
+
+        private int progress = 0;
 
         public SortingService()
         {
@@ -45,6 +50,7 @@ namespace SortingComparator.Services
 
         private SortingsResults SortTask(int[][] arraysToTest, SortingStrategy strategy)
         {
+            progress = 0;
             SortingsResults sortResult = new SortingsResults();
             sortResult.Name = strategy.GetName();
             sortResult.Tag = strategy.GetTag();
@@ -56,8 +62,16 @@ namespace SortingComparator.Services
                 SortData data = strategy.Sort(clonedArray);
                 sortResult.DataPoints.Add(new DataPoint(data.Size, data.Steps));
             }
-            Trace.WriteLine(sortResult.Tag);
+            CalculateProgress();
             return sortResult;
+        }
+
+        private void CalculateProgress()
+        {
+            progress++;
+            double value = (double)progress / sortingStrategies.Count;
+            int prog = (int)(value * 100);
+            OnSortEnd?.Invoke((int)(value * 100));
         }
     }
 }
